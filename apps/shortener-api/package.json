@@ -1,0 +1,16 @@
+{
+  "name": "shortener-api",
+  "description": "A url shortner api ",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "redis": "^2.7.1"
+  },
+  "author": "REX Real Estate",
+  "license": "Commercial",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@bitbucket.org:rexdev/rex-hummingbird.git"
+  }
+}
