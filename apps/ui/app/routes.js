@@ -39,6 +39,27 @@ export default function createRoutes(store) {
         importModules.catch(errorLoading);
       },
     }, {
+      path: '/shortener',
+      name: 'shortener',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          import('containers/UrlShortener/reducer'),
+          import('containers/UrlShortener/sagas'),
+          import('containers/UrlShortener'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([reducer, sagas, component]) => {
+          injectReducer('urlShortener', reducer.default);
+          injectSagas(sagas.default);
+
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
+      },
+    }, {
       path: '*',
       name: 'notfound',
       getComponent(nextState, cb) {
