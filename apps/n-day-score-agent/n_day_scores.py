@@ -1,6 +1,5 @@
-from datetime import date, timedelta
-import mysql.connector
-import redis
+fom datetime import date, timedelta
+from rex_utils import RexDb
 
 client = redis.StrictRedis(host='dc1-stage-redis.ybasnj.0001.usw1.cache.amazonaws.com', port=6379, db=0)
 #gets openhouse visitors for the given listing_id

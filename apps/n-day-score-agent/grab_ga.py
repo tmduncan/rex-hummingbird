@@ -1,10 +1,10 @@
-from apiclient.discovery import build
-from oauth2client.service_account import ServiceAccountCredentials
+from apirc.discovery import build
+from oauth2rc.service_account import ServiceAccountCredentials
 from datetime import datetime, timedelta
-import redis
 import re
+from rex_utils import RexDb, RexRedis
 
-client = redis.StrictRedis(host='dc1-stage-redis.ybasnj.0001.usw1.cache.amazonaws.com', port=6379, db=0)
+rc = RexRedis.get_conn()
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = 'n-day-score-worker-prod.json'
@@ -12,23 +12,17 @@ VIEW_ID = '96749630'
 
 def initialize_analyticsreporting():
   credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_FILE_LOCATION, SCOPES)
-  analytics = build('analytics', 'v4', credentials=credentials)
-  return analytics
+  return build('analytics', 'v4', credentials=credentials)
 
 def get_report(analytics, days):
   endDate = 'today'
   startDate = str(days)+"daysAgo"
-  return analytics.reports().batchGet(
-      body={
-        'reportRequests': [
-        {
-          'viewId': VIEW_ID,
-          'dateRanges': [{'startDate': startDate, 'endDate': endDate}],
-          'metrics': [{'expression': 'ga:pageviews'}],
-          'dimensions': [{'name': 'ga:pagepath'}]
-        }]
-      }
-  ).execute()
+  return analytics.reports().batchGet(body={ 'reportRequests': [{
+    'viewId': VIEW_ID,
+    'dateRanges': [{'startDate': startDate, 'endDate': endDate}],
+    'metrics': [{'expression': 'ga:pageviews'}],
+    'dimensions': [{'name': 'ga:pagepath'}]
+    }]}).execute()
 
 def print_and_store_response(response, days):
   for report in response.get('reports', []):
@@ -42,7 +36,7 @@ def print_and_store_response(response, days):
       key = str(days)+"d-"+re.split('[\?\s]', metricHeaders[0]["name"]+"-"+dimensionHeaders[0]+"-"+data[0][0])[0]
       value = data[1][0]['values'][0]
       print("%s: %s" % (key, value))
-      client.set(key, value, 3600)
+      rc.set(key, value, 3600)
 
 def main():
   days = range(0, 14)
