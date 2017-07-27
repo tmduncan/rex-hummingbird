@@ -1,7 +1,6 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import {shallow} from 'enzyme';
 
-import messages from '../messages';
 import Footer from '../index';
 
 describe('<Footer />', () => {
@@ -11,17 +10,7 @@ describe('<Footer />', () => {
     );
     expect(renderedComponent.contains(
       <section>
-          {messages.licenseMessage} />
-      </section>
-    )).toBe(true);
-  });
-
-  it('should render the credits', () => {
-    const renderedComponent = shallow(<Footer />);
-    expect(renderedComponent.contains(
-      <section>
-          {messages.authorMessage}
-        />
+        (C) 2017 REX Real Estate
       </section>
     )).toBe(true);
   });

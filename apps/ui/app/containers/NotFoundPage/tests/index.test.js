@@ -15,7 +15,7 @@ describe('<NotFound />', () => {
     );
     expect(renderedComponent.contains(
       <H1>
-          'Page not found.'
+          Page not found.
       </H1>)).toEqual(true);
   });
 });

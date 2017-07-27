@@ -9,7 +9,17 @@ import {
   DEFAULT_ACTION,
 } from './constants';
 
-const initialState = fromJS({});
+const initialState = fromJS({
+  urls: [{
+    url: 'http://rexchange.com/sell-with-us',
+    shortName: 'sell',
+    hits: 1,
+  }, {
+    url: 'https://rexchange.com/listing/33740-pacific-coast-hwy',
+    shortName: 'pch',
+    hits: 100,
+  }],
+});
 
 function urlShortenerReducer(state = initialState, action) {
   switch (action.type) {
