@@ -1,30 +1,58 @@
-import { take, call, put, select } from 'redux-saga/effects';
+import { takeEvery, call, put, select } from 'redux-saga/effects';
 import request from 'utils/request';
-import { submitShortUrlError } from './actions';
-import { SUBMIT_SHORT_URL } from './constants';
+import {
+  finishSubmitShortUrl,
+  startLoadShortUrls,
+  shortUrlsLoaded,
+  shortUrlsLoadingError,
+  submitShortUrlError } from './actions';
+import { START_LOAD_SHORT_URLS, SUBMIT_SHORT_URL } from './constants';
 import makeSelectUrlShortener from './selectors';
 
 export function* submitShortName() {
   // Select username from store
-  const urlShortnerDomain = yield select(makeSelectUrlShortener());
-  const username = yield select(makeSelectUsername());
-  const requestURL = `http://localhost:8080`;
+  const urlShortenerDomain = yield select(makeSelectUrlShortener());
+  const requestURL = 'http://localhost:8080/api/shorten';
+  const fetchOptions = {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      url: urlShortenerDomain.url,
+      shortName: urlShortenerDomain.shortName,
+    }),
+  };
 
   try {
     // Call our request helper (see 'utils/request')
-    const repos = yield call(request, requestURL);
-    yield put(reposLoaded(repos, username));
+    yield call(request, requestURL, fetchOptions);
+    yield put(finishSubmitShortUrl());
+    yield put(startLoadShortUrls());
   } catch (err) {
-    yield put(repoLoadingError(err));
+    yield put(submitShortUrlError(err));
+  }
+}
+
+export function* loadShortUrls() {
+  const requestURL = 'http://localhost:8080/api/list';
+  const fetchOptions = {
+    mode: 'cors',
+  };
+  try {
+    const resp = yield call(request, requestURL, fetchOptions);
+    yield put(shortUrlsLoaded(resp.urls));
+  } catch (err) {
+    yield put(shortUrlsLoadingError(err));
   }
 }
 
 // Individual exports for testing
 export function* defaultSaga() {
-  while (true) {
-    yield take(SUBMIT_SHORT_URL);
-    submitShortName();
-  }
+  yield takeEvery(SUBMIT_SHORT_URL, submitShortName);
+  yield takeEvery(START_LOAD_SHORT_URLS, loadShortUrls);
 }
 
 // All sagas to be loaded

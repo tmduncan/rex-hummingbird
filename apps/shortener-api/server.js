@@ -23,6 +23,8 @@ redisClient.on('error', (err) => {
 // Middleware to use for all requests
 router.use((req, res, next) => {
   console.log(`Request: ${req.path}`); // eslint-disable-line no-console
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -34,6 +36,7 @@ router.get('/api/test', (req, res) => {
 
 router.route('/api/shorten')
   .post((req, res) => {
+    console.log(req.body);
     urlstore
       .addShortUrl(redisClient, req.body.shortName, req.body.url)
       .then(urlStruct => res.json({ message: 'URL Created', response: urlStruct }))

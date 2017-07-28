@@ -8,20 +8,22 @@ import { fromJS } from 'immutable';
 import {
   CHANGE_SHORT_NAME,
   CHANGE_URL,
+  SHORT_URLS_LOADED,
+  SHORT_URLS_LOADING_ERROR,
   SUBMIT_SHORT_URL,
+  SUBMIT_SHORT_URL_ERROR,
+  SUBMIT_SHORT_URL_FINISHED,
 } from './constants';
 
 const initialState = fromJS({
+  submittingShortName: false,
   shortName: '',
   url: '',
+  urlsLoadingError: false,
   urls: [{
-    url: 'http://rexchange.com/sell-with-us',
-    shortName: 'sell',
-    hits: 1,
-  }, {
-    url: 'https://rexchange.com/listing/33740-pacific-coast-hwy',
-    shortName: 'pch',
-    hits: 100,
+    url: 'http://notreal.com',
+    shortName: 'default data not real',
+    hits: '0',
   }],
 });
 
@@ -33,13 +35,22 @@ function urlShortenerReducer(state = initialState, action) {
     case CHANGE_URL:
       return state
         .set('url', action.url);
+    case SHORT_URLS_LOADED:
+      return state
+        .set('urls', action.urls)
+        .set('urlsLoadingError', false);
+    case SHORT_URLS_LOADING_ERROR:
+      return state
+        .set('urlsLoadingError', true);
     case SUBMIT_SHORT_URL:
       return state
-        .update('urls', (urls) => urls.insert(0, {
-          hits: 0,
-          shortName: state.get('shortName'),
-          url: state.get('url'),
-        }))
+        .set('submittingShortName', true);
+    case SUBMIT_SHORT_URL_ERROR:
+      return state
+        .set('submittingShortName', false)
+        .set('shortNameSubmissionError', true);
+    case SUBMIT_SHORT_URL_FINISHED:
+      return state
         .set('shortName', '')
         .set('url', '');
     default:
