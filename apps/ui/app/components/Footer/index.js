@@ -7,9 +7,6 @@ function Footer() {
       <section>
         (C) 2017 REX Real Estate
       </section>
-      <section>
-        Made by REX Data Team
-      </section>
     </Wrapper>
   );
 }

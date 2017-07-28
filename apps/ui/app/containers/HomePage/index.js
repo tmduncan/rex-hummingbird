@@ -6,8 +6,8 @@
 
 import React from 'react';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+import {connect} from 'react-redux';
+import {createStructuredSelector} from 'reselect';
 
 import CenteredSection from './CenteredSection';
 
@@ -27,7 +27,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
         <Helmet
           title="Home Page"
           meta={[
-            { name: 'description', content: 'Project Hummingbird' },
+            {name: 'description', content: 'Project Hummingbird'},
           ]}
         />
         <div>
@@ -42,16 +42,13 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
   }
 }
 
-HomePage.propTypes = {
-};
+HomePage.propTypes = {};
 
 export function mapDispatchToProps(dispatch) {
-  return {
-  };
+  return {};
 }
 
-const mapStateToProps = createStructuredSelector({
-});
+const mapStateToProps = createStructuredSelector({});
 
 // Wrap the component to inject dispatch and state into it
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

@@ -1,5 +1,10 @@
 const SHORT_NAME_PREFIX = 'hummingbird:shortener:';
 
+function NoKeyFoundException(message) {
+  this.name = 'NoKeyFoundException';
+  this.message = message;
+}
+
 function generateShortNameHash(shortName) {
   return SHORT_NAME_PREFIX + shortName;
 }
@@ -7,8 +12,8 @@ function generateShortNameHash(shortName) {
 function getShortNameStruct(redisClient, shortNameHash) {
   return new Promise((resolve, reject) => {
     redisClient.hgetall(shortNameHash, (err, response) => {
-      if (err || !response) {
-        reject(err || 'No key found.');
+      if (err) {
+        reject(err);
       } else {
         resolve(response);
       }
@@ -54,6 +59,7 @@ function listShortNameHashes(redisClient) {
 
 async function addShortUrl(redisClient, shortName, url) {
   try {
+    console.log(`addShortUrl: ${shortName}:${url}`);
     const shortNameHash = generateShortNameHash(shortName);
     const shortNameStruct = await getShortNameStruct(redisClient, shortNameHash);
     if (shortNameStruct == null) {
@@ -69,6 +75,9 @@ async function getShortUrl(redisClient, shortName) {
   try {
     const shortNameHash = generateShortNameHash(shortName);
     const shortNameStruct = await getShortNameStruct(redisClient, shortNameHash);
+    if (shortNameStruct == null) {
+      throw new NoKeyFoundException(`No key ${shortName} found.`);
+    }
     await updateShortNameStructHit(redisClient, shortNameHash);
     return shortNameStruct.url;
   } catch (e) {
