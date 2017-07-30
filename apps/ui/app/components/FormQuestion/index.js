@@ -18,6 +18,7 @@ function FormQuestion(props) {
       <Col componentClass={ControlLabel} sm={2}>{props.label}</Col>
       <Col sm={6}>
         <FormControl
+          disabled={props.disabled}
           type="text"
           name={props.name}
           id={props.id}
