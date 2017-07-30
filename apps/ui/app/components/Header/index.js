@@ -2,14 +2,15 @@ import React from 'react';
 
 import { MenuItem, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { Link } from 'react-router';
 
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
-      <Navbar>
+      <Navbar className="navbar-inverse navbar-fixed-top">
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="#">Project Hummingbird</a>
+            <Link to="/">Project Hummingbird</Link>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>

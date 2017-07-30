@@ -6,10 +6,10 @@
 
 import React from 'react';
 import Helmet from 'react-helmet';
-import {connect} from 'react-redux';
-import {createStructuredSelector} from 'reselect';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
-import CenteredSection from './CenteredSection';
+import { Col, Row } from 'react-bootstrap';
 
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   /**
@@ -27,16 +27,16 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
         <Helmet
           title="Home Page"
           meta={[
-            {name: 'description', content: 'Project Hummingbird'},
+            { name: 'description', content: 'Project Hummingbird' },
           ]}
         />
-        <div>
-          <CenteredSection>
-            <h2>
+        <Row>
+          <Col lg={12}>
+            <h1 className="page-header">
               Project Hummingbird Home Page
-            </h2>
-          </CenteredSection>
-        </div>
+            </h1>
+          </Col>
+        </Row>
       </article>
     );
   }
