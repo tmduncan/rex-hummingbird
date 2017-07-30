@@ -1,3 +1,9 @@
+redis:
+  image: redis
+  hostname: redis
+  ports:
+   - "6379:6379"
+
 rex-hummingbird-ui:
   extends:
     file: shared.yml
@@ -6,3 +12,20 @@ rex-hummingbird-ui:
   dockerfile: Dockerfile
   command: npm start
   tty: true
+  ports:
+    - "3001:3001"
+
+rex-hummingbird-shortener-api:
+  extends:
+    file: shared.yml
+    service: base
+  build: ./apps/shortener-api
+  dockerfile: Dockerfile
+  command: npm start
+  tty: true
+  ports:
+    - "5000:5000"
+  links:
+   - redis
+
+
