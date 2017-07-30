@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import { Button, Col, ControlLabel, Form, FormControl, FormGroup, HelpBlock, Panel, Row, Table } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
+import FormQuestion from 'components/FormQuestion';
 import makeSelectUrlShortener from './selectors';
 import { changeShortName, changeUrl, startLoadShortUrls, submitShortUrl } from './actions';
 
@@ -18,8 +19,8 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
     this.props.onLoadShortUrls();
   }
 
-  getValidationShortName() {
-    const shortNameLength = this.props.UrlShortener.shortName.length;
+  getValidationShortName(shortName) {
+    const shortNameLength = shortName.length;
     if (shortNameLength >= 3) {
       return 'success';
     }
@@ -29,8 +30,7 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
     return null;
   }
 
-  getValidationUrl() {
-    const url = this.props.UrlShortener.url;
+  getValidationUrl(url) {
     const urlLength = url.length;
     if (urlLength > 7 && (url.startsWith('http://') || url.startsWith('https://'))) {
       return 'success';
@@ -44,8 +44,8 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
 
   render() {
     const { shortName, url, urls } = this.props.UrlShortener;
-    const validUrlInput = this.getValidationUrl();
-    const validShortNameInput = this.getValidationShortName();
+    const validUrlInput = this.getValidationUrl(url);
+    const validShortNameInput = this.getValidationShortName(shortName);
     const disableSubmit = validUrlInput !== 'success' || validShortNameInput !== 'success' || this.props.submittingShortName;
 
     return (
@@ -63,52 +63,28 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
         </Row>
         <Panel header="Please enter the url that you would like to shorten and the requested link.">
           <Form horizontal>
-            <FormGroup
-              controlId="formShortName"
-              validationState={validShortNameInput}
-              style={{ marginBottom: 0 }}
-            >
-              <Col componentClass={ControlLabel} sm={2}>http://rex.re/</Col>
-              <Col sm={6}>
-                <FormControl
-                  type="text"
-                  name="shortname"
-                  id="formShortName"
-                  placeholder="house-awesome"
-                  value={shortName}
-                  onChange={this.props.onChangeShortName}
-                  disabled={this.props.submittingShortName}
-                />
-                {(validShortNameInput === 'error' ?
-                  <HelpBlock>Please provide at least three characters.</HelpBlock>
-                  : <div style={{ marginTop: 5, marginBottom: 10 }}>&nbsp;</div>
-                )}
-                <FormControl.Feedback />
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="formUrl"
-              validationState={validUrlInput}
-              style={{ marginBottom: 0 }}
-            >
-              <Col componentClass={ControlLabel} sm={2}>URL:</Col>
-              <Col sm={6}>
-                <FormControl
-                  type="text"
-                  name="url"
-                  id="formUrl"
-                  placeholder="http://rexchanoge.com/house-awesome?utm_content=something"
-                  value={url}
-                  onChange={this.props.onChangeUrl}
-                  disabled={this.props.submittingShortName}
-                />
-                {(validUrlInput === 'error' ?
-                  <HelpBlock>Please provide full url starting with 'http://' or 'https://'.</HelpBlock>
-                  : <div style={{ marginTop: 5, marginBottom: 10 }}>&nbsp;</div>
-                )}
-                <FormControl.Feedback />
-              </Col>
-            </FormGroup>
+            <FormQuestion
+              disabled={this.props.submittingShortName}
+              helpText="Please provide at least three characters."
+              id="formShortName"
+              isValid={this.getValidationShortName}
+              label="http://rex.re/"
+              name="shortName"
+              onChange={this.props.onChangeShortName}
+              placeholder="house-awesome"
+              value={shortName}
+            />
+            <FormQuestion
+              disabled={this.props.submittingShortName}
+              helpText="Please provide full url starting with 'http://' or 'https://'."
+              id="formUrl"
+              isValid={this.getValidationUrl}
+              label="Website Url"
+              name="url"
+              onChange={this.props.onChangeUrl}
+              placeholder="http://rexchange.com/house-awesome?utm_content=something"
+              value={url}
+            />
             <Button
               type="submit"
               onClick={this.props.onSubmitShortUrl}
