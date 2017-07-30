@@ -7,13 +7,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
+import { Button, Col, ControlLabel, Form, FormControl, FormGroup, HelpBlock, Panel, Row, Table } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 import makeSelectUrlShortener from './selectors';
-import {
-  changeShortName,
-  changeUrl,
-  startLoadShortUrls,
-  submitShortUrl } from './actions';
+import { changeShortName, changeUrl, startLoadShortUrls, submitShortUrl } from './actions';
 
 export class UrlShortener extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
@@ -21,9 +18,35 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
     this.props.onLoadShortUrls();
   }
 
+  getValidationShortName() {
+    const shortNameLength = this.props.UrlShortener.shortName.length;
+    if (shortNameLength >= 3) {
+      return 'success';
+    }
+    if (shortNameLength > 0) {
+      return 'error';
+    }
+    return null;
+  }
+
+  getValidationUrl() {
+    const url = this.props.UrlShortener.url;
+    const urlLength = url.length;
+    if (urlLength > 7 && (url.startsWith('http://') || url.startsWith('https://'))) {
+      return 'success';
+    }
+    if (urlLength > 0) {
+      return 'error';
+    }
+    return null;
+  }
+
 
   render() {
     const { shortName, url, urls } = this.props.UrlShortener;
+    const validUrlInput = this.getValidationUrl();
+    const validShortNameInput = this.getValidationShortName();
+    const disableSubmit = validUrlInput !== 'success' || validShortNameInput !== 'success' || this.props.submittingShortName;
 
     return (
       <div>
@@ -33,74 +56,90 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
             { name: 'description', content: 'REX url shortner' },
           ]}
         />
-
-        <div className="container-fluid">
-          <h2 className="text-center">Url Shortner</h2>
-          <div style={{ marginLeft: 20 }}>
-            <p>Please enter the url that you would like to shorten and the requested link.</p>
-            <form>
-              <label htmlFor="shortname_input">
-                rex.re/
-                <input
+        <Row>
+          <Col lg={12}>
+            <h1 className="page-header">Url Shortener</h1>
+          </Col>
+        </Row>
+        <Panel header="Please enter the url that you would like to shorten and the requested link.">
+          <Form horizontal>
+            <FormGroup
+              controlId="formShortName"
+              validationState={validShortNameInput}
+              style={{ marginBottom: 0 }}
+            >
+              <Col componentClass={ControlLabel} sm={2}>http://rex.re/</Col>
+              <Col sm={6}>
+                <FormControl
                   type="text"
                   name="shortname"
-                  id="shortname_input"
+                  id="formShortName"
                   placeholder="house-awesome"
                   value={shortName}
                   onChange={this.props.onChangeShortName}
-                  style={{ border: 3, width: 150 }}
                   disabled={this.props.submittingShortName}
                 />
-              </label>
-              <br />
-              <label htmlFor="url_input">
-                URL:
-                <input
+                {(validShortNameInput === 'error' ?
+                  <HelpBlock>Please provide at least three characters.</HelpBlock>
+                  : <div style={{ marginTop: 5, marginBottom: 10 }}>&nbsp;</div>
+                )}
+                <FormControl.Feedback />
+              </Col>
+            </FormGroup>
+            <FormGroup
+              controlId="formUrl"
+              validationState={validUrlInput}
+              style={{ marginBottom: 0 }}
+            >
+              <Col componentClass={ControlLabel} sm={2}>URL:</Col>
+              <Col sm={6}>
+                <FormControl
                   type="text"
                   name="url"
-                  id="url_input"
+                  id="formUrl"
                   placeholder="http://rexchanoge.com/house-awesome?utm_content=something"
                   value={url}
                   onChange={this.props.onChangeUrl}
-                  style={{ border: 3, width: 500, marginLeft: 10 }}
                   disabled={this.props.submittingShortName}
                 />
-              </label>
-              <br />
-              <button
-                type="submit"
-                onClick={this.props.onSubmitShortUrl}
-                disabled={this.props.submittingShortName}
+                {(validUrlInput === 'error' ?
+                  <HelpBlock>Please provide full url starting with 'http://' or 'https://'.</HelpBlock>
+                  : <div style={{ marginTop: 5, marginBottom: 10 }}>&nbsp;</div>
+                )}
+                <FormControl.Feedback />
+              </Col>
+            </FormGroup>
+            <Button
+              type="submit"
+              onClick={this.props.onSubmitShortUrl}
+              disabled={disableSubmit}
 
-              >
-                Add URL
-              </button>
-            </form>
-          </div>
-          <hr />
-          <div>
-            <h3 className="text-center">Short Url Stats</h3>
-            <button onClick={this.props.onLoadShortUrls}>Load Urls</button>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Short Name</th>
-                  <th>Reference</th>
-                  <th>Hits</th>
+            >
+              Add URL
+            </Button>
+          </Form>
+        </Panel>
+        <Panel header="Current Short Urls">
+          <Button onClick={this.props.onLoadShortUrls}>Reload Urls</Button>
+          <Table fill striped bordered condensed hover>
+            <thead>
+              <tr>
+                <th>Short Name</th>
+                <th>Reference</th>
+                <th>Hits</th>
+              </tr>
+            </thead>
+            <tbody>
+              { urls ? urls.map((entry) => (
+                <tr key={entry.shortName}>
+                  <td>{ entry.shortName }</td>
+                  <td>{ entry.url }</td>
+                  <td>{ entry.hits }</td>
                 </tr>
-              </thead>
-              <tbody>
-                { urls ? urls.map((entry) => (
-                  <tr key={entry.shortName}>
-                    <td>{ entry.shortName }</td>
-                    <td>{ entry.url }</td>
-                    <td>{ entry.hits }</td>
-                  </tr>
-                )) : null }
-              </tbody>
-            </table>
-          </div>
-        </div>
+              )) : null }
+            </tbody>
+          </Table>
+        </Panel>
       </div>
     );
   }

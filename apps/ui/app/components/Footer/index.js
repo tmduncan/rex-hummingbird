@@ -1,13 +1,16 @@
 import React from 'react';
-import Wrapper from './Wrapper';
+import { Col, Row } from 'react-bootstrap';
+
 
 function Footer() {
   return (
-    <Wrapper>
-      <section>
-        (C) 2017 REX Real Estate
-      </section>
-    </Wrapper>
+    <footer>
+      <Row>
+        <Col lg={12}>
+          (C) 2017 REX Real Estate
+        </Col>
+      </Row>
+    </footer>
   );
 }
 
