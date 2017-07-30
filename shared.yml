@@ -1,0 +1,4 @@
+base:
+  build: .
+  volumes:
+    - ./apps/ui:/usr/src/rex-hummingbird/frontend

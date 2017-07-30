@@ -1,0 +1,8 @@
+rex-hummingbird-ui:
+  extends:
+    file: shared.yml
+    service: base
+  build: ./apps/ui
+  dockerfile: Dockerfile
+  command: npm start
+  tty: true
