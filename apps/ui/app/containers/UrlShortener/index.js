@@ -30,8 +30,9 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
   }
 
   getValidationUrl() {
-    const urlLength = this.props.UrlShortener.url.length;
-    if (urlLength > 3) {
+    const url = this.props.UrlShortener.url;
+    const urlLength = url.length;
+    if (urlLength > 7 && (url.startsWith('http://') || url.startsWith('https://'))) {
       return 'success';
     }
     if (urlLength > 0) {
@@ -43,6 +44,9 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
 
   render() {
     const { shortName, url, urls } = this.props.UrlShortener;
+    const validUrlInput = this.getValidationUrl();
+    const validShortNameInput = this.getValidationShortName();
+    const disableSubmit = validUrlInput !== 'success' || validShortNameInput !== 'success' || this.props.submittingShortName;
 
     return (
       <div>
@@ -61,7 +65,7 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
           <Form horizontal>
             <FormGroup
               controlId="formShortName"
-              validationState={this.getValidationShortName()}
+              validationState={validShortNameInput}
               style={{ marginBottom: 0 }}
             >
               <Col componentClass={ControlLabel} sm={2}>http://rex.re/</Col>
@@ -75,7 +79,7 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
                   onChange={this.props.onChangeShortName}
                   disabled={this.props.submittingShortName}
                 />
-                {(this.getValidationShortName() === 'error' ?
+                {(validShortNameInput === 'error' ?
                   <HelpBlock>Please provide at least three characters.</HelpBlock>
                   : <div style={{ marginTop: 5, marginBottom: 10 }}>&nbsp;</div>
                 )}
@@ -84,7 +88,7 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
             </FormGroup>
             <FormGroup
               controlId="formUrl"
-              validationState={this.getValidationUrl()}
+              validationState={validUrlInput}
               style={{ marginBottom: 0 }}
             >
               <Col componentClass={ControlLabel} sm={2}>URL:</Col>
@@ -98,9 +102,9 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
                   onChange={this.props.onChangeUrl}
                   disabled={this.props.submittingShortName}
                 />
-                {(this.getValidationUrl() === 'error' ?
-                    <HelpBlock>Please provide at least three characters.</HelpBlock>
-                    : <div style={{ marginTop: 5, marginBottom: 10 }}>&nbsp;</div>
+                {(validUrlInput === 'error' ?
+                  <HelpBlock>Please provide full url starting with 'http://' or 'https://'.</HelpBlock>
+                  : <div style={{ marginTop: 5, marginBottom: 10 }}>&nbsp;</div>
                 )}
                 <FormControl.Feedback />
               </Col>
@@ -108,7 +112,7 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
             <Button
               type="submit"
               onClick={this.props.onSubmitShortUrl}
-              disabled={this.props.submittingShortName}
+              disabled={disableSubmit}
 
             >
               Add URL
