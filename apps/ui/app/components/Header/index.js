@@ -16,8 +16,8 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <NavItem eventKey={1} href="#">Reports</NavItem>
-            <NavItem eventKey={2} href="#">Visualizations</NavItem>
+            {/*<NavItem eventKey={1} href="#">Reports</NavItem>*/}
+            {/*<NavItem eventKey={2} href="#">Visualizations</NavItem>*/}
             <NavDropdown eventKey={3} title="Tools" id="basic-nav-dropdown">
               <LinkContainer to="/shortener">
                 <MenuItem eventKey={3.1}>URL Shortener</MenuItem>

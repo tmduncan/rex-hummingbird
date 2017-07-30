@@ -10,17 +10,9 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
 import { Col, Row } from 'react-bootstrap';
+import hummingbirdImg from './hummingbird.jpg';
 
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
-  /**
-   * when initial state username is not null, submit the form to load repos
-   */
-  componentDidMount() {
-    if (this.props.username && this.props.username.trim().length > 0) {
-      this.props.onSubmitForm();
-    }
-  }
-
   render() {
     return (
       <article>
@@ -30,11 +22,25 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
             { name: 'description', content: 'Project Hummingbird' },
           ]}
         />
+
         <Row>
           <Col lg={12}>
-            <h1 className="page-header">
-              Project Hummingbird Home Page
-            </h1>
+            <h1 className="page-header">Welcome to Project Hummingbird</h1>
+          </Col>
+          <Col md={6}>
+            <p>Project Hummingbird is Rex's marketing platform for intelligently targeting potential home buyers and
+              sellers.</p>
+
+            <p>Features Coming:</p>
+            <ul>
+              <li>Track Google Adwords spend and effectiveness</li>
+              <li>Create shortened urls for print advertizing</li>
+              <li>Create ad links for ad platforms</li>
+              <li>Analyze data about the entities being targeted</li>
+            </ul>
+          </Col>
+          <Col md={6}>
+            <img className="img-responsive" src={hummingbirdImg} alt="" />
           </Col>
         </Row>
       </article>
