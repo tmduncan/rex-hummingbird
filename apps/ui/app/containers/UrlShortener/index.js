@@ -97,7 +97,7 @@ export class UrlShortener extends React.Component { // eslint-disable-line react
                   type="text"
                   name="url"
                   id="formUrl"
-                  placeholder="http://rexchanoge.com/house-awesome?utm_content=something"
+                  placeholder="http://rexchange.com/house-awesome?utm_content=something"
                   value={url}
                   onChange={this.props.onChangeUrl}
                   disabled={this.props.submittingShortName}

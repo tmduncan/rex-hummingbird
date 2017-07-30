@@ -22,6 +22,9 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
               <LinkContainer to="/shortener">
                 <MenuItem eventKey={3.1}>URL Shortener</MenuItem>
               </LinkContainer>
+              <LinkContainer to="/ad-generator">
+                <MenuItem eventKey={3.1}>Ad URL Generator</MenuItem>
+              </LinkContainer>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
