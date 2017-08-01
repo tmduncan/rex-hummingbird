@@ -1,0 +1,5 @@
+base:
+  build: .
+  volumes:
+    - ./apps/ui:/usr/src/rex-hummingbird/frontend
+    - ./apps/shortener-api:/usr/src/rex-hummingbird/shortener-api

@@ -12,7 +12,7 @@ import makeSelectUrlShortener from './selectors';
 export function* submitShortName() {
   // Select username from store
   const urlShortenerDomain = yield select(makeSelectUrlShortener());
-  const requestURL = 'http://localhost:8080/api/shorten';
+  const requestURL = 'http://hummingbird:5000/api/shorten';
   const fetchOptions = {
     method: 'POST',
     mode: 'cors',
@@ -37,7 +37,7 @@ export function* submitShortName() {
 }
 
 export function* loadShortUrls() {
-  const requestURL = 'http://localhost:8080/api/list';
+  const requestURL = 'http://hummingbird:5000/api/list';
   const fetchOptions = {
     mode: 'cors',
   };
